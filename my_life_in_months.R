@@ -12,8 +12,8 @@ loadfonts(device = "pdf", quiet = TRUE)
 
 # Prep data ----
 
-birth_year <- 1991
-birth_month <- 6
+birth_year <- 1988
+birth_month <- 7
 current_year <- year(today())
 current_month <- month(today())
 
@@ -34,14 +34,20 @@ life_data <- expand_grid(
 
 eras <- tribble(
   ~year_month, ~era, ~fill_colour,
-  "1991,6", "childhood", "#fbbcb8",
-  "2006,9", "highschool", "#bfdff6",
-  "2009,9", "undergrad", "#9acbf0",
-  "2013,9", "masters", "#78baeb",
-  "2015,9", "data analyst 1", "#a3e3c4",
-  "2017,4", "data\nanalyst", "#75d2a6",
-  "2018,7", "statistician", "#00c290",
-  "2019,9", "freelance\nR dev", "#beaef5"
+  "1988,7", "childhood", "#fbbcb8",
+  "1994,9", "primary school", "#bfdff6",
+  "1999,9", "middle school", "#9acbf0",
+  "2002,9", "highschool", "#bfdff6",
+  "2007,9", "undergrad", "#9acbf0",
+  "2011,9", "masters", "#78baeb",
+  "2012,9", "Erasmus", "#75d2a6",
+  "2013,1", "masters cont.", "#beaef5",
+  "2014,2", "moved to Australia", "#00c290",
+  "2014,11", "back to Italy", "#beaef5",
+  "2015,02", "work at Google", "#75d2a6",
+  "2015,9", "2nd masters", "#9acbf0",
+  "2016,9", "PhD", "#fbbcb8",
+  "2019,11", "postdoc", "#75d2a6"
 )
 
 # Darken fill colour to be used for text annotations
