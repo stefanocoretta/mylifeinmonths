@@ -109,11 +109,11 @@ life_in_months_base <- life_data %>%
 
 annotation_base_size <- 10 # Use ~10 for exporting at dpi 300, and ~3 for working interactively
 annotation_lineheight <- 1
-initial_annotations_font_family <- "IBM Plex Mono"
+initial_annotations_font_family <- "Arial"
 initial_annotations_colour <- "#666666"
 
 initial_text <- function(x, y, label, size = annotation_base_size, colour = initial_annotations_colour, ...) {
-  annotate("text", x = x, y = y, label = label, size = size, colour = colour, family = "IBM Plex Mono", fontface = "italic", ...)
+  annotate("text", x = x, y = y, label = label, size = size, colour = colour, family = "Arial", fontface = "italic", ...)
 }
 
 initial_segment <- function(x, xend, y, yend, colour = initial_annotations_colour) {
@@ -130,7 +130,7 @@ life_in_months_initial_annotations <- life_in_months_base +
   geom_curve(aes(x = 0, xend = 1, y = 14, yend = 12), arrow = arrow(length = unit(0.0175, "npc")), colour = initial_annotations_colour) +
   initial_text(x = 0.5, y = 0, label = "age", size = annotation_base_size * 0.8, hjust = 0) +
   geom_segment(aes(x = 2, xend = 4, y = 0, yend = 0), arrow = arrow(length = unit(0.0175, "npc")), colour = initial_annotations_colour) +
-  annotate("text", x = 31.25, y = 6.5, label = "my life\nin months", hjust = 0, family = "Azo Sans", fontface = "bold", lineheight = 1, size = annotation_base_size * 2.5)
+  annotate("text", x = 31.25, y = 6.5, label = "my life\nin months", hjust = 0, family = "Arial", fontface = "bold", lineheight = 1, size = annotation_base_size * 2.5)
 
 # "Role" annotations ----
 
@@ -138,11 +138,11 @@ role_annotations_y <- -0.25
 roles_size <- annotation_base_size * 1.5
 
 role_text <- function(x, y = role_annotations_y, label, size = roles_size, ...) {
-  annotate("text", x = x, y = y, label = label, size = size, colour = unique(unique(life_data_list[[label]][["text_colour"]])), family = "Cedarville Cursive", ...)
+  annotate("text", x = x, y = y, label = label, size = size, colour = unique(unique(life_data_list[[label]][["text_colour"]])), family = "Arial", ...)
 }
 
 role_text_under <- function(x, y, label, colour_era, size, ...) {
-  annotate("text", x = x, y = y, label = label, colour = unique(life_data_list[[colour_era]][["text_colour"]]), size = size, family = "Cedarville Cursive", ...)
+  annotate("text", x = x, y = y, label = label, colour = unique(life_data_list[[colour_era]][["text_colour"]]), size = size, family = "Arial", ...)
 }
 
 # For annotations: x values are the usually ~midpoint of your age (+1) during that era, give or take for some shifting around to fit labels
