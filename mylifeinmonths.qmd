@@ -1,0 +1,138 @@
+---
+title: "mylifeinmonths"
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(prismatic)
+library(waffle)
+library(hrbrthemes)
+```
+
+## Prepare data
+
+```{r}
+birth_year <- 1988
+birth_month <- 7
+current_year <- year(today())
+current_month <- month(today())
+
+life_data <- expand_grid(
+  month = month.name,
+  year = birth_year:current_year
+) %>%
+  mutate(month = fct_relevel(month, month.name)) %>%
+  arrange(year, month) %>%
+  group_by(year) %>%
+  mutate(month_number = row_number()) %>%
+  ungroup() %>%
+  filter(!(year == birth_year & month_number < birth_month)) %>%
+  # If you want to exclude after the current month
+  filter(!(year == current_year & month_number > current_month))
+```
+
+```{r}
+eras <- tribble(
+  ~year_month, ~era, ~fill_colour,
+  "1988,7", "childhood", "#AA988A",
+  "1994,9", "primary school", "#B66A40",
+  "1999,9", "middle school", "#2F414B",
+  "2002,9", "highschool", "#2B4B3C"
+) %>%
+  mutate(
+    text_colour = as.character(clr_darken(fill_colour, shift = 0.1))
+  )
+```
+
+```{r}
+life_data_2 <- life_data %>%
+  rowwise() %>%
+  mutate(year_month = paste0(c(year, month_number), collapse = ",")) %>%
+  ungroup() %>%
+  left_join(eras, by = "year_month") %>%
+  fill(era, fill_colour, text_colour) %>%
+  mutate(fill_colour = fct_inorder(fill_colour))
+```
+
+```{r}
+# Add a plot_month and plot_year
+# If the month number is >= birth month, then keep as is
+# If the month number is less than birth month, then make the plot month number 12 + the month
+# And make the plot year the year - 1
+
+life_data_3 <- life_data_2 %>%
+  mutate(
+    plot_month = case_when(
+      month_number >= birth_month ~ month_number,
+      month_number < birth_month ~ 12L + month_number
+    ),
+    plot_year = case_when(
+      month_number >= birth_month ~ year,
+      month_number < birth_month ~ year - 1L
+    )
+  )
+```
+
+## Make waffle chart
+
+```{r}
+background_colourund_colour <- "#F7F7F7"
+
+life_in_months_base <- life_data_3 %>%
+  # the count of each era is the number of months in that era
+  count(fill_colour) %>%
+  ggplot(aes(fill = fill_colour, values = n)) +
+  # make each row a year/12 months
+  geom_waffle(color = background_colour, n_rows = 12, size = 1, flip = FALSE) + 
+  coord_equal() +
+  # The max here will differ based on how old you are! I'm 29 (so there are 30 squares), so ~7.5 more for the additional annotation on the side
+  scale_x_continuous(limits = c(-0.5, 37.5)) +
+  scale_y_continuous(limits = c(-2.5, 14.5)) +
+  scale_fill_identity() +
+  labs(y = NULL, x = NULL) +
+  theme_ipsum(grid = "") +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(fill = background_colour, color = background_colour),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank()
+  )
+```
+
+## Add initial annotations
+
+```{r}
+# Use ~10 for exporting at dpi 300, and ~3 for working interactively
+ann_size <- 3
+ann_lineh <- 1
+ann_type <- "Atkinson Hyperlegible"
+ann_col <- "#4E0B0C"
+
+# initial_text <- function(x, y, label, size = ann_size, colour = ann_col, ...) {
+#   annotate("text", x = x, y = y, label = label, size = size,
+#            colour = colour, family = "Arial", fontface = "italic", ...)
+# }
+# 
+# initial_segment <- function(x, xend, y, yend, colour = ann_col) {
+#   geom_segment(aes(x = x, xend = xend, y = y, yend = yend),
+#                colour = colour)
+# }
+
+life_in_months_initial_annotations <- life_in_months_base +
+  annotate("text", x = 0, y = 6.5, label = "1 year", angle = 90, size = ann_size, colour = ann_col, family = ann_type, fontface = "italic") +
+  annotate("text", x = 1, y = 14.5, label = "1 square = 1 month", size = ann_size * 0.8, colour = ann_col, lineheight = ann_lineh, hjust = 0.4, family = ann_type, fontface = "italic") +
+  annotate("text", x = 0.5, y = 0, label = "age", size = ann_size * 0.8, hjust = 0) +
+  annotate("text", x = 20, y = 14.5, label = "my life in months", hjust = 0, family = ann_type, fontface = "bold", lineheight = 1, size = ann_size * 2.5) +
+  
+  initial_segment(x = 0, xend = 0, y = 1, yend = 5) +
+  initial_segment(x = -0.25, xend = 0.25, y = 1, yend = 1) +
+  initial_segment(x = 0, xend = 0, y = 8, yend = 12) +
+  initial_segment(x = -0.25, xend = 0.25, y = 12, yend = 12) +
+  geom_curve(aes(x = 0, xend = 1, y = 14, yend = 12), arrow = arrow(length = unit(0.0175, "npc")), colour = ann_col) +
+  geom_segment(aes(x = 2, xend = 4, y = 0, yend = 0), arrow = arrow(length = unit(0.0175, "npc")), colour = ann_col)
+
+
+life_in_months_initial_annotations
+```
+

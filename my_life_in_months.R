@@ -37,17 +37,18 @@ eras <- tribble(
   "1988,7", "childhood", "#fbbcb8",
   "1994,9", "primary school", "#bfdff6",
   "1999,9", "middle school", "#9acbf0",
-  "2002,9", "highschool", "#bfdff6",
-  "2007,9", "undergrad", "#9acbf0",
+  "2002,9", "highschool", "#bffff6",
+  "2007,9", "undergrad", "#9acaf0",
   "2011,9", "masters", "#78baeb",
   "2012,9", "Erasmus", "#75d2a6",
   "2013,1", "masters cont.", "#beaef5",
   "2014,2", "moved to Australia", "#00c290",
-  "2014,11", "back to Italy", "#beaef5",
-  "2015,02", "work at Google", "#75d2a6",
-  "2015,9", "2nd masters", "#9acbf0",
-  "2016,9", "PhD", "#fbbcb8",
-  "2019,11", "postdoc", "#75d2a6"
+  "2014,11", "back to Italy", "#baaef5",
+  "2015,02", "work at Google", "#75d1a6",
+  "2015,9", "2nd masters", "#93cbf0",
+  "2016,9", "PhD", "#fbacb8",
+  "2019,11", "postdoc", "#75d4a6",
+  "2021,10", "Edinburgh", "#9acbd0"
 )
 
 # Darken fill colour to be used for text annotations
@@ -107,7 +108,7 @@ life_in_months_base <- life_data %>%
 
 # Initial annotations ----
 
-annotation_base_size <- 10 # Use ~10 for exporting at dpi 300, and ~3 for working interactively
+annotation_base_size <- 3 # Use ~10 for exporting at dpi 300, and ~3 for working interactively
 annotation_lineheight <- 1
 initial_annotations_font_family <- "Arial"
 initial_annotations_colour <- "#666666"
@@ -149,24 +150,17 @@ role_text_under <- function(x, y, label, colour_era, size, ...) {
 
 life_in_months_role_annotations <- life_in_months_initial_annotations +
   role_text(x = 8.5, label = "childhood") +
-  role_text(x = 17, label = "highschool") +
-  role_text(x = 19, y = role_annotations_y - 1.25, label = "undergrad") +
-  role_text_under(x = 19, y = role_annotations_y - 2.25, label = "(stats)", colour_era = "undergrad", size = roles_size * 0.75) +
+  role_text(x = 17, label = "primary school") +
+  role_text(x = 19, y = role_annotations_y - 1.25, label = "middle school") +
+  role_text_under(x = 19, y = role_annotations_y - 2.25, label = "highschool", colour_era = "undergrad", size = roles_size * 0.75) +
   geom_curve(aes(x = 21.5, xend = 22, y = -1.5, yend = 0.35), curvature = 0.4, arrow = arrow(length = unit(0.0175, "npc")), colour = unique(life_data_list[["undergrad"]][["text_colour"]])) +
   role_text(x = 24.25, y = role_annotations_y, label = "masters") +
-  role_text_under(x = 24.25, y = role_annotations_y - 1, label = "(also stats)", colour_era = "masters", size = roles_size * 0.75) +
-  role_text(x = 27.5, y = role_annotations_y - 1.5, label = "data\nanalyst", lineheight = annotation_lineheight - 0.25) +
-  geom_curve(aes(x = 26.5, xend = 26, y = -1.15, yend = 0.35), curvature = -0.2, arrow = arrow(length = unit(0.0175, "npc")), colour = unique(life_data_list[["data\nanalyst"]][["text_colour"]])) +
-  geom_curve(aes(x = 27.5, xend = 28, y = -1, yend = 0.35), curvature = 0.3, arrow = arrow(length = unit(0.0175, "npc")), colour = unique(life_data_list[["data\nanalyst"]][["text_colour"]])) +
-  role_text(x = 31, y = role_annotations_y - 0.25, label = "statistician", lineheight = annotation_lineheight, size = roles_size) +
-  geom_curve(aes(x = 28.75, xend = 29, y = role_annotations_y, yend = 0.35), curvature = -0.15, arrow = arrow(length = unit(0.0175, "npc")), colour = unique(life_data_list[["statistician"]][["text_colour"]])) +
-  role_text(x = 33, y = 1.5, label = "freelance\nR dev", lineheight = annotation_lineheight - 0.25) +
-  geom_curve(aes(x = 32.75, xend = 30, y = 0.5, yend = 0.35), curvature = -0.3, arrow = arrow(length = unit(0.0175, "npc")), colour = unique(life_data_list[["freelance\nR dev"]][["text_colour"]]))
+  role_text_under(x = 24.25, y = role_annotations_y - 1, label = "Erasmus", colour_era = "masters", size = roles_size * 0.75)
 
 # Location annotations ----
 
 location_colour <- "#8c8c8c"
-location_annotations_y <- 13
+location_annotations_y <- 14
 
 location_text <- function(x, y = location_annotations_y, label, size = annotation_base_size, ...) {
   annotate("text", x = x, y = y, label = label, size = size, colour = location_colour, family = "Cedarville Cursive", ...)
